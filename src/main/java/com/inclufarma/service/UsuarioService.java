@@ -14,7 +14,7 @@ public class UsuarioService {
 
     public Usuario registrarUsuario(UsuarioDTO dto){
         var user = usuarioRepository.findByEmail(dto.email());
-        if(user.isPresent()){
+        if(user != null){
             throw new RuntimeException("Usuário já cadastrado");
         }
 
