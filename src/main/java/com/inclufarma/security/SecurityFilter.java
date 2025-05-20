@@ -14,9 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.security.Security;
-
-import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
 
 @Component
 @AllArgsConstructor
@@ -27,7 +24,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(path.equals("/api/auth/login") || path.equals("/api/auth/register")) {
+
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register")) {
             filterChain.doFilter(request, response);
             return;
         }

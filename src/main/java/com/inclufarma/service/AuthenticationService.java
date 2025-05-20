@@ -24,7 +24,7 @@ public class AuthenticationService {
 
         Usuario newUser = new Usuario();
         newUser.setNome(dto.nome());
-        newUser.setSenha(dto.senha());
+        newUser.setSenha(encryptedPassword);
         newUser.setEmail(dto.email());
         newUser.setRole(dto.role());
 
