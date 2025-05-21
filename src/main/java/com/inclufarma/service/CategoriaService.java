@@ -1,5 +1,6 @@
 package com.inclufarma.service;
 
+import com.inclufarma.dto.CategoriaDTO;
 import com.inclufarma.model.Categoria;
 import com.inclufarma.repository.CategoriaRepository;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,10 @@ public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
 
-     public List<Categoria> listarCategorias() {
-        return categoriaRepository.findAll();
+     public List<CategoriaDTO> listarCategorias() {
+         return categoriaRepository.findAll()
+                 .stream()
+                 .map(c -> new CategoriaDTO(c.getId(), c.getNome()))
+                 .toList();
     }
 }

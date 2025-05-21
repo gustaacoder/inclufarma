@@ -1,4 +1,6 @@
 package com.inclufarma.dto;
 
-public record CategoriaDTO(String nome) {
+import java.util.UUID;
+
+public record CategoriaDTO(UUID id, String nome) {
 }

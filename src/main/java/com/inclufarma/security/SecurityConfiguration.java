@@ -32,6 +32,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/cidade/cadastrar").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/api/endereco/listarEnderecos").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/api/endereco/cadastrar").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/endereco/update/{id}").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/endereco/deletar/{id}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/api/categoria/listarCategoria").hasRole("ADMIN")
                         .requestMatchers(
                                 "/v3/api-docs/**",

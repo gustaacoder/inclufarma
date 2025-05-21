@@ -1,9 +1,12 @@
 package com.inclufarma.service;
 
 import com.inclufarma.dto.RegistroDTO;
+import com.inclufarma.enums.UserRole;
 import com.inclufarma.model.Usuario;
 import com.inclufarma.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +17,10 @@ public class AuthenticationService {
     private final UsuarioRepository usuarioRepository;
 
     public synchronized Usuario registrarUsuario(RegistroDTO dto){
-        var usuario = usuarioRepository.findByEmail(dto.email());
+        var usuarioEmail = usuarioRepository.findByEmailIgnoreCase(dto.email());
 
-        if(usuario != null){
-            throw new RuntimeException("Usuário já cadastrado");
+        if(usuarioEmail.isPresent()){
+            throw new RuntimeException("Usuário já cadastrado com este e-mail.");
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.senha());
@@ -26,8 +29,21 @@ public class AuthenticationService {
         newUser.setNome(dto.nome());
         newUser.setSenha(encryptedPassword);
         newUser.setEmail(dto.email());
-        newUser.setRole(dto.role());
+        newUser.setRole(UserRole.valueOf("USER"));
 
         return usuarioRepository.save(newUser);
+    }
+
+    public Usuario getUsuarioLogado() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Usuário não autenticado");
+        }
+
+        String email = authentication.getName();
+
+        return usuarioRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 }

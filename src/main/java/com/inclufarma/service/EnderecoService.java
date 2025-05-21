@@ -2,9 +2,12 @@ package com.inclufarma.service;
 
 import com.inclufarma.dto.EnderecoDTO;
 import com.inclufarma.model.Endereco;
+import com.inclufarma.model.Usuario;
 import com.inclufarma.repository.EnderecoRepository;
+import com.inclufarma.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +19,23 @@ import java.util.UUID;
 public class EnderecoService {
 
     private final EnderecoRepository enderecoRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public List<Endereco> findAll() {
-        return enderecoRepository.findAll();
+    public List<Endereco> findAllEnderecoUsuario(UUID usuarioId) {
+        try{
+            return enderecoRepository.findByUsuarioId(usuarioId);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar endereços do usuário: " + e.getMessage(), e);
+        }
     }
 
     @Transactional
     public Endereco create(EnderecoDTO dto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+
         validarCamposParaCriacao(dto);
 
         Endereco endereco = new Endereco();
@@ -31,12 +44,17 @@ public class EnderecoService {
         endereco.setNumero(dto.endereco().getNumero());
         endereco.setCidade(dto.endereco().getCidade());
         endereco.setCep(dto.endereco().getCep());
+        endereco.setUsuario(usuario);
 
         return enderecoRepository.save(endereco);
     }
 
     @Transactional
     public Endereco update(EnderecoDTO dto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
         Endereco existente = enderecoRepository.findById(dto.endereco().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado com ID: " + dto.endereco().getId()));
 
@@ -47,6 +65,7 @@ public class EnderecoService {
         existente.setNumero(dto.endereco().getNumero());
         existente.setCidade(dto.endereco().getCidade());
         existente.setCep(dto.endereco().getCep());
+        existente.setUsuario(usuario);
 
         return enderecoRepository.save(existente);
     }

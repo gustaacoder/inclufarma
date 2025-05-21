@@ -19,9 +19,11 @@ public class ItensPedido {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @ManyToOne
     @JoinColumn(name = "pedido_id")
     private Pedidos pedidos;
+
     @ManyToOne
     @JoinColumn(name = "medicamento_id")
     private Medicamento medicamento;

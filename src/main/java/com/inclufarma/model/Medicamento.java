@@ -20,9 +20,11 @@ public class Medicamento {
     private UUID id;
     private String nome;
     private String principio_ativo;
+
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+
     private String descricao;
     private Float preco;
     private Integer estoque;

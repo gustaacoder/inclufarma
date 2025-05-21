@@ -28,4 +28,6 @@ public interface EnderecoRepository extends JpaRepository<Endereco, UUID> {
             @Param("nomeLogradouro") String nomeLogradouro,
             @Param("cidade") Cidade nomeCidade
     );
+
+    List<Endereco> findByUsuarioId(UUID usuarioId);
 }
