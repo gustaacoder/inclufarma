@@ -1,6 +1,6 @@
 package com.inclufarma.dto;
 
-import com.inclufarma.model.Cidade;
+import com.inclufarma.model.Endereco;
 
-public record EnderecoDTO(String logradouro, Cidade cidade, Integer cep, String numero) {
+public record EnderecoDTO(Endereco endereco) {
 }

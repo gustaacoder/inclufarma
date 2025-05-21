@@ -24,4 +24,5 @@ public class Endereco {
     private Cidade cidade;
     private Integer cep;
     private String numero;
+    private String bairro;
 }

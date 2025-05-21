@@ -30,9 +30,9 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers( "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/boletimImobiliario/cadastrar").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/categoria/listarCategoria").hasRole("ADMIN")
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
