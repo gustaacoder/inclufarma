@@ -12,13 +12,13 @@ public class CidadeService {
 
     private final CidadeRepository cidadeRepository;
 
-    public Cidade buscarOuCriar(CidadeDTO dto) {
+    public Cidade cadastrarCidade(String nome) {
 
         return cidadeRepository
-                .findByNomeIgnoreCase(dto.nome())
+                .findByNomeIgnoreCase(nome)
                 .orElseGet(() -> {
                     Cidade nova = new Cidade();
-                    nova.setNome(dto.nome());
+                    nova.setNome(nome);
 
                     return cidadeRepository.save(nova);
                 });
