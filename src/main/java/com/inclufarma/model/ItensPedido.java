@@ -29,4 +29,7 @@ public class ItensPedido {
     private Medicamento medicamento;
     private Integer quantidade;
     private Float precoUnitario;
+
+    public ItensPedido(Pedidos pedido, Medicamento medicamento, Integer quantidade, Float precoUnitario) {
+    }
 }

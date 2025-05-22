@@ -38,6 +38,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/api/endereco/update/{id}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.DELETE, "/api/endereco/deletar/{id}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/api/categoria/listarCategoria").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/medicamento/listar").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/api/medicamento/cadastrar").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/medicamento/atualizar").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/medicamento/deletar/{id}").hasRole("ADMIN")
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

@@ -22,6 +22,8 @@ public class Pedidos {
     @ManyToOne
     private Usuario usuario;
     private LocalDateTime data;
+    @ManyToOne
+    private Endereco endereco;
 
     @PrePersist
     public void prePersist() {
