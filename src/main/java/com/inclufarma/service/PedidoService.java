@@ -26,9 +26,9 @@ public class PedidoService {
     private final MedicamentoRepository medicamentoRepository;
     private final UsuarioRepository usuarioRepository;
 
-    public List<Pedidos> listarItensPedidoUsuarioLogado(UUID usuarioId) {
+    public List<ItensPedido> listarItensPedidoUsuarioLogado(UUID usuarioId) {
         try{
-            return pedidosRepository.findByPedidoUsuarioId(usuarioId);
+            return itensPedidoRepository.findByPedidoUsuarioId(usuarioId);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar endereços do usuário: " + e.getMessage(), e);
         }

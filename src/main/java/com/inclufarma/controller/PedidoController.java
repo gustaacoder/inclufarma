@@ -1,5 +1,7 @@
 package com.inclufarma.controller;
 
+import com.inclufarma.dto.EnderecoDTO;
+import com.inclufarma.dto.ItensPedidoDTO;
 import com.inclufarma.model.Endereco;
 import com.inclufarma.model.ItensPedido;
 import com.inclufarma.model.Pedidos;
@@ -12,9 +14,9 @@ import com.inclufarma.service.EnderecoService;
 import com.inclufarma.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,8 +31,21 @@ public class PedidoController {
 
     @Operation(summary = "Listar pedidos do usuário logado")
     @GetMapping("/listarPedidos")
-    public List<Pedidos> listarPedidosDoUsuarioLogado() {
+    public List<ItensPedido> listarPedidosDoUsuarioLogado() {
         Usuario usuarioLogado = authenticationService.getUsuarioLogado();
         return pedidoService.listarItensPedidoUsuarioLogado(usuarioLogado.getId());
     }
+
+    @Operation(summary = "Criar pedido")
+    @PostMapping("/criarPedido")
+    public ResponseEntity<?> criarPedido(@RequestBody List<ItensPedidoDTO> itensDto, EnderecoDTO enderecoDTO) {
+        try {
+            Pedidos novoPedido = pedidoService.criarPedido(itensDto, enderecoDTO);
+            return new ResponseEntity<>(novoPedido, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
 }

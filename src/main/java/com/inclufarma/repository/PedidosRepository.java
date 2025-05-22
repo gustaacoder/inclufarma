@@ -8,5 +8,4 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PedidosRepository extends JpaRepository<Pedidos, UUID> {
-    List<Pedidos> findByPedidoUsuarioId(UUID usuarioId);
 }
