@@ -1,8 +1,10 @@
 package com.inclufarma.service;
 
 import com.inclufarma.dto.EnderecoDTO;
+import com.inclufarma.model.Cidade;
 import com.inclufarma.model.Endereco;
 import com.inclufarma.model.Usuario;
+import com.inclufarma.repository.CidadeRepository;
 import com.inclufarma.repository.EnderecoRepository;
 import com.inclufarma.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,6 +23,7 @@ public class EnderecoService {
 
     private final EnderecoRepository enderecoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final CidadeRepository cidadeRepository;
 
     public List<Endereco> findAllEnderecoUsuario(UUID usuarioId) {
         try{
@@ -35,15 +39,20 @@ public class EnderecoService {
         Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        Optional<Cidade> cidade = cidadeRepository.findByNomeIgnoreCase(dto.cidade());
+        if (cidade.isEmpty()) {
+            throw new IllegalArgumentException("Cidade não encontrada.");
+        }
 
-        validarCamposParaCriacao(dto);
+
+        validarCampos(dto);
 
         Endereco endereco = new Endereco();
-        endereco.setLogradouro(dto.endereco().getLogradouro());
-        endereco.setBairro(dto.endereco().getBairro());
-        endereco.setNumero(dto.endereco().getNumero());
-        endereco.setCidade(dto.endereco().getCidade());
-        endereco.setCep(dto.endereco().getCep());
+        endereco.setLogradouro(dto.logradouro());
+        endereco.setBairro(dto.bairro());
+        endereco.setNumero(dto.numero());
+        endereco.setCidade(cidade.get());
+        endereco.setCep(dto.cep());
         endereco.setUsuario(usuario);
 
         return enderecoRepository.save(endereco);
@@ -55,19 +64,18 @@ public class EnderecoService {
         Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        Endereco existente = enderecoRepository.findById(dto.endereco().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado com ID: " + dto.endereco().getId()));
 
-        validarCamposParaAtualizacao(dto);
+        Endereco newEndereco = new Endereco();
 
-        existente.setLogradouro(dto.endereco().getLogradouro());
-        existente.setBairro(dto.endereco().getBairro());
-        existente.setNumero(dto.endereco().getNumero());
-        existente.setCidade(dto.endereco().getCidade());
-        existente.setCep(dto.endereco().getCep());
-        existente.setUsuario(usuario);
+        validarCampos(dto);
 
-        return enderecoRepository.save(existente);
+        newEndereco.setLogradouro(dto.logradouro());
+        newEndereco.setBairro(dto.bairro());
+        newEndereco.setNumero(dto.numero());
+        newEndereco.setCep(dto.cep());
+        newEndereco.setUsuario(usuario);
+
+        return enderecoRepository.save(newEndereco);
     }
 
     @Transactional
@@ -78,35 +86,24 @@ public class EnderecoService {
         enderecoRepository.delete(existente);
     }
 
-    private void validarCamposParaCriacao(EnderecoDTO dto) {
+    private void validarCampos(EnderecoDTO dto) {
 
-        if (dto.endereco().getCidade() == null) {
-            throw new IllegalArgumentException("Cidade é obrigatória.");
-        }
-
-        if (dto.endereco().getCep() == null) {
+        if (dto.cep() == null) {
             throw new IllegalArgumentException("CEP é obrigatório.");
         }
 
-        if (dto.endereco().getNumero() == null || dto.endereco().getNumero().isBlank()) {
+        if (dto.numero() == null || dto.numero().isBlank()) {
             throw new IllegalArgumentException("Número é obrigatório e não pode estar em branco.");
         }
 
-        if (dto.endereco().getBairro() == null || dto.endereco().getBairro().isBlank()) {
+        if (dto.bairro() == null || dto.bairro().isBlank()) {
             throw new IllegalArgumentException("Bairro é obrigatório e não pode estar em branco.");
         }
 
-        if (dto.endereco().getLogradouro() == null || dto.endereco().getLogradouro().isBlank()) {
+        if (dto.logradouro() == null || dto.logradouro().isBlank()) {
             throw new IllegalArgumentException("Logradouro é obrigatório e não pode estar em branco.");
         }
     }
 
-    private void validarCamposParaAtualizacao(EnderecoDTO dto) {
-        if (dto.endereco().getId() == null) {
-            throw new IllegalArgumentException("Código do endereço é obrigatório para atualização.");
-        }
-
-        validarCamposParaCriacao(dto);
-    }
 
 }

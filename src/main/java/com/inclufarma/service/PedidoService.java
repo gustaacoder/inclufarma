@@ -1,6 +1,7 @@
 package com.inclufarma.service;
 
 import com.inclufarma.dto.EnderecoDTO;
+import com.inclufarma.dto.EnderecoPedidoDTO;
 import com.inclufarma.dto.ItensPedidoDTO;
 import com.inclufarma.model.ItensPedido;
 import com.inclufarma.model.Medicamento;
@@ -28,20 +29,20 @@ public class PedidoService {
 
     public List<ItensPedido> listarItensPedidoUsuarioLogado(UUID usuarioId) {
         try{
-            return itensPedidoRepository.findByPedidoUsuarioId(usuarioId);
+            return itensPedidoRepository.findByPedidosUsuarioId(usuarioId);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar endereços do usuário: " + e.getMessage(), e);
         }
     }
 
-    public Pedidos criarPedido(List<ItensPedidoDTO> ItensDto, EnderecoDTO enderecoDTO) {
+    public Pedidos criarPedido(List<ItensPedidoDTO> ItensDto, EnderecoPedidoDTO enderecoPedidoDTO) {
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         Pedidos pedido = new Pedidos();
-        pedido.setEndereco(enderecoDTO.endereco());
+        pedido.setEndereco(enderecoPedidoDTO.endereco());
         pedido.setUsuario(usuario);
         pedidosRepository.save(pedido);
 
