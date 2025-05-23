@@ -47,7 +47,9 @@ public class SecurityFilter extends OncePerRequestFilter {
                         .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
                 var authentication = new UsernamePasswordAuthenticationToken(
-                        usuario, null, usuario.getAuthorities());
+                        email, // Usar o email como principal ao invés do objeto usuário
+                        null,
+                        usuario.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

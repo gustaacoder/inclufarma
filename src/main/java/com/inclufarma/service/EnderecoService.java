@@ -36,6 +36,7 @@ public class EnderecoService {
     @Transactional
     public Endereco create(EnderecoDTO dto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        usuarioRepository.flush(); // Garante que operações pendentes sejam sincronizadas
         Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
@@ -59,23 +60,29 @@ public class EnderecoService {
     }
 
     @Transactional
-    public Endereco update(EnderecoDTO dto) {
+    public Endereco update(UUID id, EnderecoDTO dto) {
+        Endereco existente = enderecoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado com ID: " + id));
+
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-
-        Endereco newEndereco = new Endereco();
+        Optional<Cidade> cidade = cidadeRepository.findByNomeIgnoreCase(dto.cidade());
+        if (cidade.isEmpty()) {
+            throw new IllegalArgumentException("Cidade não encontrada.");
+        }
 
         validarCampos(dto);
 
-        newEndereco.setLogradouro(dto.logradouro());
-        newEndereco.setBairro(dto.bairro());
-        newEndereco.setNumero(dto.numero());
-        newEndereco.setCep(dto.cep());
-        newEndereco.setUsuario(usuario);
+        existente.setLogradouro(dto.logradouro());
+        existente.setBairro(dto.bairro());
+        existente.setNumero(dto.numero());
+        existente.setCep(dto.cep());
+        existente.setCidade(cidade.get());
+        existente.setUsuario(usuario);
 
-        return enderecoRepository.save(newEndereco);
+        return enderecoRepository.save(existente);
     }
 
     @Transactional

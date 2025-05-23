@@ -12,9 +12,6 @@ import java.util.UUID;
 
 public interface EnderecoRepository extends JpaRepository<Endereco, UUID> {
 
-
-    Optional<Endereco> findById(UUID id);
-
     @Query("""
     SELECT e FROM Endereco e
     WHERE e.numero = :numero

@@ -41,10 +41,10 @@ public class MedicamentoController {
      }
 
     @Operation(summary = "Atualizar medicamento")
-    @PutMapping("/atualizar")
-    public ResponseEntity<?> atualizarMedicamento(@RequestBody MedicamentoDTO dto) {
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<?> atualizarMedicamento(@PathVariable UUID id, @RequestBody MedicamentoDTO dto) {
         try {
-            Medicamento atualizado = medicamentoService.atualizarMedicamento(dto);
+            Medicamento atualizado = medicamentoService.atualizarMedicamento(id, dto);
             return ResponseEntity.ok(atualizado);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

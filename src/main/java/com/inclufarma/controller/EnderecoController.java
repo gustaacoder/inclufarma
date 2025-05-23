@@ -7,6 +7,7 @@ import com.inclufarma.repository.EnderecoRepository;
 import com.inclufarma.service.AuthenticationService;
 import com.inclufarma.service.EnderecoService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,12 +46,12 @@ public class EnderecoController {
 
     @Operation(summary = "Atualizar endereço")
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> atualizarEndereco(@RequestBody EnderecoDTO dto){
+    public ResponseEntity<?> atualizarEndereco(@PathVariable UUID id, @RequestBody EnderecoDTO dto) {
         try {
-            Endereco atualizado = enderecoService.update(dto);
+            Endereco atualizado = enderecoService.update(id, dto);
             return ResponseEntity.ok(atualizado);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
