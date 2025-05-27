@@ -20,6 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/endereco")
 @AllArgsConstructor
+
 public class EnderecoController {
 
     private final AuthenticationService authenticationService;

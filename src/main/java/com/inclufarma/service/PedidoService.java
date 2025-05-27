@@ -3,14 +3,8 @@ package com.inclufarma.service;
 import com.inclufarma.dto.EnderecoDTO;
 import com.inclufarma.dto.EnderecoPedidoDTO;
 import com.inclufarma.dto.ItensPedidoDTO;
-import com.inclufarma.model.ItensPedido;
-import com.inclufarma.model.Medicamento;
-import com.inclufarma.model.Pedidos;
-import com.inclufarma.model.Usuario;
-import com.inclufarma.repository.ItensPedidoRepository;
-import com.inclufarma.repository.MedicamentoRepository;
-import com.inclufarma.repository.PedidosRepository;
-import com.inclufarma.repository.UsuarioRepository;
+import com.inclufarma.model.*;
+import com.inclufarma.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,6 +20,7 @@ public class PedidoService {
     private final PedidosRepository pedidosRepository;
     private final MedicamentoRepository medicamentoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final EnderecoRepository enderecoRepository;
 
     public List<ItensPedido> listarItensPedidoUsuarioLogado(UUID usuarioId) {
         try{
@@ -42,7 +37,17 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         Pedidos pedido = new Pedidos();
-        pedido.setEndereco(enderecoPedidoDTO.endereco());
+
+        Endereco endereco = new Endereco();
+        endereco.setBairro(enderecoPedidoDTO.endereco().getBairro());
+        endereco.setCep(enderecoPedidoDTO.endereco().getCep());
+        endereco.setCidade(enderecoPedidoDTO.endereco().getCidade());
+        endereco.setLogradouro(enderecoPedidoDTO.endereco().getLogradouro());
+        endereco.setNumero(enderecoPedidoDTO.endereco().getNumero());
+
+        enderecoRepository.save(endereco);
+
+        pedido.setEndereco(endereco);
         pedido.setUsuario(usuario);
         pedidosRepository.save(pedido);
 

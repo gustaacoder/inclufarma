@@ -1,4 +1,4 @@
 package com.inclufarma.dto;
 
-public record LoginRespostaDTO(String token) {
+public record LoginRespostaDTO(String token, String nome) {
 }

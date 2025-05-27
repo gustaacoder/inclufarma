@@ -31,5 +31,9 @@ public class ItensPedido {
     private Float precoUnitario;
 
     public ItensPedido(Pedidos pedido, Medicamento medicamento, Integer quantidade, Float precoUnitario) {
+        this.pedidos = pedido;
+        this.medicamento = medicamento;
+        this.quantidade = quantidade;
+        this.precoUnitario = precoUnitario;
     }
 }

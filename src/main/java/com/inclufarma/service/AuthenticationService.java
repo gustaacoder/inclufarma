@@ -29,7 +29,7 @@ public class AuthenticationService {
         newUser.setNome(dto.nome());
         newUser.setSenha(encryptedPassword);
         newUser.setEmail(dto.email());
-        newUser.setRole(UserRole.valueOf("ADMIN"));
+        newUser.setRole(UserRole.valueOf("USER"));
 
         return usuarioRepository.save(newUser);
     }

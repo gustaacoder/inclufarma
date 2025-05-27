@@ -18,6 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/medicamento")
 @AllArgsConstructor
+
 public class MedicamentoController {
 
     private final MedicamentoService medicamentoService;
