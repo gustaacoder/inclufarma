@@ -33,7 +33,7 @@ public class AuthenticationController {
 
         var token = tokenService.generateToken((Usuario) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginRespostaDTO(token, ((Usuario) auth.getPrincipal()).getNome()));
+        return ResponseEntity.ok(new LoginRespostaDTO(token, ((Usuario) auth.getPrincipal()).getNome(), ((Usuario) auth.getPrincipal()).getRole()));
     }
 
     @Operation(summary = "Realiza o cadastro do usuário")

@@ -1,4 +1,6 @@
 package com.inclufarma.dto;
 
-public record LoginRespostaDTO(String token, String nome) {
+import com.inclufarma.enums.UserRole;
+
+public record LoginRespostaDTO(String token, String nome, UserRole role) {
 }
