@@ -45,10 +45,10 @@ public class MedicamentoService {
     }
 
     @Transactional
-    public Medicamento atualizarMedicamento(MedicamentoDTO dto) {
+    public Medicamento atualizarMedicamento(UUID id, MedicamentoDTO dto) {
 
-        Medicamento medicamentoExistente = medicamentoRepository.findById(dto.categoria())
-                .orElseThrow(() -> new EntityNotFoundException("Medicamento não encontrado com id: " + dto.categoria()));
+        Medicamento medicamentoExistente = medicamentoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Medicamento não encontrado com id: " + id));
 
         Categoria categoria = categoriaRepository.findById(dto.categoria())
                 .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada com id: " + dto.categoria()));

@@ -44,7 +44,7 @@ import java.time.ZoneOffset;
                         .verify(token)
                         .getSubject();//Pegando o login do usuário no token
             } catch (JWTVerificationException e){
-                return ""; //Retorna vazio caso o token não seja válido, onde o spring detecta e retorna o erro 401
+                return null; //Retorna vazio caso o token não seja válido, onde o spring detecta e retorna o erro 401
             }
         }
 

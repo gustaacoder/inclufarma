@@ -1,5 +1,6 @@
 package com.inclufarma.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +20,9 @@ public class Pedidos {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
     @ManyToOne
+    @JsonIgnore
     private Usuario usuario;
     private LocalDateTime data;
     @ManyToOne

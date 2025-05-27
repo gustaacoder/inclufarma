@@ -1,5 +1,6 @@
 package com.inclufarma.security;
 
+import com.inclufarma.model.Usuario;
 import com.inclufarma.repository.UsuarioRepository;
 import com.inclufarma.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -34,12 +35,26 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         var token = this.recoverToken(request);
 
-        if(token != null) {
+        System.out.println("Token recebido: " + token);
+
+        if (token != null) {
             var email = tokenService.validateToken(token);
-            UserDetails usuario = usuarioRepository.findByEmail(email);
-            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            System.out.println("Email recuperado do token: " + email);
+
+            if (email != null) {
+                Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
+                        .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        email, // Usar o email como principal ao invés do objeto usuário
+                        null,
+                        usuario.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
+
 
         filterChain.doFilter(request, response);
     }

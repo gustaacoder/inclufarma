@@ -1,6 +1,8 @@
 package com.inclufarma.controller;
 
+import com.inclufarma.dto.CriarPedidoRequestDTO;
 import com.inclufarma.dto.EnderecoDTO;
+import com.inclufarma.dto.EnderecoPedidoDTO;
 import com.inclufarma.dto.ItensPedidoDTO;
 import com.inclufarma.model.Endereco;
 import com.inclufarma.model.ItensPedido;
@@ -26,7 +28,6 @@ import java.util.List;
 public class PedidoController {
 
     private final AuthenticationService authenticationService;
-    private final ItensPedidoRepository itensPedidoRepository;
     private final PedidoService pedidoService;
 
     @Operation(summary = "Listar pedidos do usuário logado")
@@ -38,9 +39,12 @@ public class PedidoController {
 
     @Operation(summary = "Criar pedido")
     @PostMapping("/criarPedido")
-    public ResponseEntity<?> criarPedido(@RequestBody List<ItensPedidoDTO> itensDto, EnderecoDTO enderecoDTO) {
+    public ResponseEntity<?> criarPedido(@RequestBody CriarPedidoRequestDTO requestDTO) {
         try {
-            Pedidos novoPedido = pedidoService.criarPedido(itensDto, enderecoDTO);
+            List<ItensPedidoDTO> ItensDto = requestDTO.itensDto();
+            EnderecoPedidoDTO enderecoPedidoDTO = requestDTO.enderecoPedidoDTO();
+
+            Pedidos novoPedido = pedidoService.criarPedido(ItensDto, enderecoPedidoDTO);
             return new ResponseEntity<>(novoPedido, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
