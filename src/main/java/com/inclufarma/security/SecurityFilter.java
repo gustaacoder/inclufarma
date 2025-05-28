@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @AllArgsConstructor
@@ -28,7 +29,18 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register")) {
+        // Lista de rotas públicas
+        List<String> publicPaths = List.of(
+                "/api/auth/login",
+                "/api/auth/register",
+                "/api/categoria/listarCategoria",
+                "/api/medicamento/listar",
+                "/swagger-ui",
+                "/v3/api-docs"
+        );
+
+        // Se for rota pública, não validar token
+        if (publicPaths.stream().anyMatch(path::startsWith)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -38,23 +50,32 @@ public class SecurityFilter extends OncePerRequestFilter {
         System.out.println("Token recebido: " + token);
 
         if (token != null) {
-            var email = tokenService.validateToken(token);
+            try {
+                var email = tokenService.validateToken(token);
 
-            System.out.println("Email recuperado do token: " + email);
+                if (email == null) {
+                    System.out.println("Token inválido ou expirado");
+                    filterChain.doFilter(request, response);
+                    return;
+                }
 
-            if (email != null) {
+                System.out.println("Email recuperado do token: " + email);
+
                 Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
                         .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
                 var authentication = new UsernamePasswordAuthenticationToken(
-                        email, // Usar o email como principal ao invés do objeto usuário
+                        email,
                         null,
                         usuario.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (Exception e) {
+                System.out.println("Erro na validação do token: " + e.getMessage());
+                filterChain.doFilter(request, response);
+                return;
             }
         }
-
 
         filterChain.doFilter(request, response);
     }
