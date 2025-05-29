@@ -1,6 +1,5 @@
 package com.inclufarma.security;
 
-
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +24,8 @@ import java.util.List;
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfiguration {
-    private final SecurityFilter securityFilter;
     //Injetando o SecurityFilter para validar o token
+    private final SecurityFilter securityFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
@@ -68,6 +67,7 @@ public class SecurityConfiguration {
 
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Frontend
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
@@ -85,4 +85,5 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder () {
         return new BCryptPasswordEncoder();
     }
+
 }

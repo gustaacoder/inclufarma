@@ -10,5 +10,4 @@ public class IncluFarmaApplication {
 		SpringApplication.run(IncluFarmaApplication.class, args);
 		System.out.println("Executando");
 	}
-
 }

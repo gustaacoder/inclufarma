@@ -1,9 +1,9 @@
 package com.inclufarma.controller;
 
-import com.inclufarma.dto.AutenticacaoDTO;
-import com.inclufarma.dto.LoginRespostaDTO;
-import com.inclufarma.dto.RegistroDTO;
+import com.inclufarma.dto.*;
+import com.inclufarma.enums.UserRole;
 import com.inclufarma.model.Usuario;
+import com.inclufarma.repository.UsuarioRepository;
 import com.inclufarma.service.AuthenticationService;
 import com.inclufarma.service.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +16,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/auth")
@@ -23,6 +25,7 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager; // Classe própria do Spring Security que gerencia autenticação
     private final AuthenticationService authenticationService;
+    private final UsuarioRepository usuarioRepository;
     private final TokenService tokenService;
 
     @Operation(summary = "Realiza o login do usuário")

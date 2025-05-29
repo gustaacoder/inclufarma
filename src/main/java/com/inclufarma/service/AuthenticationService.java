@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     private final UsuarioRepository usuarioRepository;
+    private final TokenService tokenService;
 
     public synchronized Usuario registrarUsuario(RegistroDTO dto){
         var usuarioEmail = usuarioRepository.findByEmailIgnoreCase(dto.email());
